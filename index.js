@@ -26,20 +26,29 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
 
-    const productCollection = client.db("productDB").collection("product");
     const brandAddCollection = client.db("brandUDB").collection("brandU");
+    const productCollection = client.db("productDB").collection("product");
     const cartCollection = client.db("cardDB").collection("cart");
+    const userCollection = client.db("userDB").collection("user");
 
-    app.get("/product", async (req, res) => {
-      const cursor = productCollection.find();
+    // for home page data:
+    app.get("/brandU", async (req, res) => {
+      const cursor = brandAddCollection.find();
       const result = await cursor.toArray();
       res.send(result);
     });
 
-    app.get("product/:id", async (req, res) => {
-      const id = req.params.id;
-      const query = { _id: new ObjectId(id) };
-      const result = productCollection.findOne(query);
+    app.post("/brandU", async (req, res) => {
+      const newBrandU = req.body;
+      console.log(newBrandU);
+      const result = await brandAddCollection.insertOne(newBrandU);
+      res.send(result);
+    });
+
+    // for all products of brands:
+    app.get("/product", async (req, res) => {
+      const cursor = productCollection.find();
+      const result = await cursor.toArray();
       res.send(result);
     });
 
@@ -50,6 +59,15 @@ async function run() {
       res.send(result);
     });
 
+    // for get specify brand products when click any brand:
+    app.get("product/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = productCollection.findOne(query);
+      res.send(result);
+    });
+
+    // for update:
     app.put("/product/:id", async (req, res) => {
       const id = req.params.id;
       const filter = { _id: new ObjectId(id) };
@@ -74,19 +92,7 @@ async function run() {
       res.send(result);
     });
 
-    app.get("/brandU", async (req, res) => {
-      const cursor = brandAddCollection.find();
-      const result = await cursor.toArray();
-      res.send(result);
-    });
-
-    app.post("/brandU", async (req, res) => {
-      const newBrandU = req.body;
-      console.log(newBrandU);
-      const result = await brandAddCollection.insertOne(newBrandU);
-      res.send(result);
-    });
-
+    // Add to Cart:
     app.get("/cart", async (req, res) => {
       const cursor = cartCollection.find();
       const result = await cursor.toArray();
@@ -100,12 +106,29 @@ async function run() {
       res.send(result);
     });
 
+    // for delete:
     app.delete("/cart/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
       const result = await cartCollection.deleteOne(query);
       res.send(result);
     });
+
+    // for user:
+    app.post("/user", async (req, res) => {
+      const newUser = req.body;
+      console.log(newUser);
+      const result = await userCollection.insertOne(newUser);
+      res.send(result);
+    });
+
+    // // for user:
+    // app.post("/user", async (req, res) => {
+    //   const newUser = req.body;
+    //   console.log(newUser);
+    //   const result = await cartCollection.insertOne(newUser);
+    //   res.send(result);
+    // });
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
