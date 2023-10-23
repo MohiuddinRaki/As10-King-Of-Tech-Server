@@ -132,11 +132,11 @@ async function run() {
       res.send(result);
     });
 
-    // app.get("/feedback", async (req, res) => {
-    //   const cursor = feedBackCollection.find();
-    //   const result = await cursor.toArray();
-    //   res.send(result);
-    // });
+    app.get("/feedback", async (req, res) => {
+      const cursor = feedBackCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    });
 
     // for Add Team:
     app.post("/team", async (req, res) => {
@@ -146,11 +146,11 @@ async function run() {
       res.send(result);
     });
 
-    // app.get("/team", async (req, res) => {
-    //   const cursor = teamCollection.find();
-    //   const result = await cursor.toArray();
-    //   res.send(result);
-    // });
+    app.get("/team", async (req, res) => {
+      const cursor = teamCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    });
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
