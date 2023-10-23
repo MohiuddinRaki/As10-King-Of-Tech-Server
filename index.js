@@ -30,14 +30,10 @@ async function run() {
     const productCollection = client.db("productDB").collection("product");
     const cartCollection = client.db("cardDB").collection("cart");
     const userCollection = client.db("userDB").collection("user");
+    const feedBackCollection = client.db("feedbackDB").collection("feedback");
+    const teamCollection = client.db("teamDB").collection("team");
 
     // for home page data:
-    app.get("/brandU", async (req, res) => {
-      const cursor = brandAddCollection.find();
-      const result = await cursor.toArray();
-      res.send(result);
-    });
-
     app.post("/brandU", async (req, res) => {
       const newBrandU = req.body;
       console.log(newBrandU);
@@ -45,17 +41,23 @@ async function run() {
       res.send(result);
     });
 
-    // for all products of brands:
-    app.get("/product", async (req, res) => {
-      const cursor = productCollection.find();
+    app.get("/brandU", async (req, res) => {
+      const cursor = brandAddCollection.find();
       const result = await cursor.toArray();
       res.send(result);
     });
 
+    // for all products of brands:
     app.post("/product", async (req, res) => {
       const newProduct = req.body;
       console.log(newProduct);
       const result = await productCollection.insertOne(newProduct);
+      res.send(result);
+    });
+
+    app.get("/product", async (req, res) => {
+      const cursor = productCollection.find();
+      const result = await cursor.toArray();
       res.send(result);
     });
 
@@ -93,16 +95,16 @@ async function run() {
     });
 
     // Add to Cart:
-    app.get("/cart", async (req, res) => {
-      const cursor = cartCollection.find();
-      const result = await cursor.toArray();
-      res.send(result);
-    });
-
     app.post("/cart", async (req, res) => {
       const newCart = req.body;
       console.log(newCart);
       const result = await cartCollection.insertOne(newCart);
+      res.send(result);
+    });
+
+    app.get("/cart", async (req, res) => {
+      const cursor = cartCollection.find();
+      const result = await cursor.toArray();
       res.send(result);
     });
 
@@ -122,11 +124,31 @@ async function run() {
       res.send(result);
     });
 
-    // // for user:
-    // app.post("/user", async (req, res) => {
-    //   const newUser = req.body;
-    //   console.log(newUser);
-    //   const result = await cartCollection.insertOne(newUser);
+    // for FeedBack:
+    app.post("/feedback", async (req, res) => {
+      const newFeedBack = req.body;
+      console.log(newFeedBack);
+      const result = await feedBackCollection.insertOne(newFeedBack);
+      res.send(result);
+    });
+
+    // app.get("/feedback", async (req, res) => {
+    //   const cursor = feedBackCollection.find();
+    //   const result = await cursor.toArray();
+    //   res.send(result);
+    // });
+
+    // for Add Team:
+    app.post("/team", async (req, res) => {
+      const newTeam = req.body;
+      console.log(newTeam);
+      const result = await teamCollection.insertOne(newTeam);
+      res.send(result);
+    });
+
+    // app.get("/team", async (req, res) => {
+    //   const cursor = teamCollection.find();
+    //   const result = await cursor.toArray();
     //   res.send(result);
     // });
 
