@@ -1,8 +1,8 @@
 const express = require("express");
+const app = express();
 const cors = require("cors");
 require("dotenv").config();
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
-const app = express();
 const port = process.env.PORT || 5000;
 
 // middleware:
@@ -24,14 +24,12 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    // await client.connect();
 
     const brandAddCollection = client.db("brandUDB").collection("brandU");
     const productCollection = client.db("productDB").collection("product");
     const cartCollection = client.db("cardDB").collection("cart");
     const userCollection = client.db("userDB").collection("user");
-    const feedBackCollection = client.db("feedbackDB").collection("feedback");
-    const teamCollection = client.db("teamDB").collection("team");
 
     // for home page data:
     app.post("/brandU", async (req, res) => {
@@ -108,6 +106,14 @@ async function run() {
       res.send(result);
     });
 
+      // for get specify user added products when click any add to cart product:
+      app.get("cart/:id", async (req, res) => {
+        const id = req.params.id;
+        const query = { _id: new ObjectId(id) };
+        const result = cartCollection.findOne(query);
+        res.send(result);
+      });
+
     // for delete:
     app.delete("/cart/:id", async (req, res) => {
       const id = req.params.id;
@@ -124,36 +130,8 @@ async function run() {
       res.send(result);
     });
 
-    // for FeedBack:
-    app.post("/feedback", async (req, res) => {
-      const newFeedBack = req.body;
-      console.log(newFeedBack);
-      const result = await feedBackCollection.insertOne(newFeedBack);
-      res.send(result);
-    });
-
-    app.get("/feedback", async (req, res) => {
-      const cursor = feedBackCollection.find();
-      const result = await cursor.toArray();
-      res.send(result);
-    });
-
-    // for Add Team:
-    app.post("/team", async (req, res) => {
-      const newTeam = req.body;
-      console.log(newTeam);
-      const result = await teamCollection.insertOne(newTeam);
-      res.send(result);
-    });
-
-    app.get("/team", async (req, res) => {
-      const cursor = teamCollection.find();
-      const result = await cursor.toArray();
-      res.send(result);
-    });
-
     // Send a ping to confirm a successful connection
-    await client.db("admin").command({ ping: 1 });
+    // await client.db("admin").command({ ping: 1 });
     console.log(
       "Pinged your deployment. You successfully connected to MongoDB!"
     );
